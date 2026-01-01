@@ -1,0 +1,72 @@
+<mvc:View
+    controllerName="test.controller.App"
+    displayBlock="true"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:tnt="sap.tnt"
+>
+    <tnt:ToolPage id="toolPage">
+        <tnt:header>
+            <tnt:ToolHeader>
+                <Button
+                    icon="sap-icon://menu2"
+                    press=".onCollapseExpandPress"
+                    tooltip="{i18n>app.menu.toggle}"
+                />
+                <ToolbarSpacer />
+                <Title
+                    text="{i18n>shell.title}"
+                    level="H2"
+                />
+                <ToolbarSpacer />
+            </tnt:ToolHeader>
+        </tnt:header>
+
+        <tnt:sideContent>
+            <tnt:SideNavigation
+                itemSelect=".onItemSelect"
+                expanded="false"
+                id="sideNavigation"
+                selectedKey="walked"
+            >
+                <tnt:NavigationList id="navigationList">
+                    <tnt:NavigationListItem
+                        text="{i18n>nav.home}"
+                        icon="sap-icon://home"
+                        key="main"
+                    />
+                    <tnt:NavigationListItem
+                        text="{i18n>nav.suppliers}"
+                        id="suppliersItem"
+                        icon="sap-icon://supplier"
+                        key="suppliers"
+                    />
+                    <tnt:NavigationListItem
+                        text="{i18n>nav.products}"
+                        id="productsItem"
+                        icon="sap-icon://product"
+                        key="products"
+                    />
+                </tnt:NavigationList>
+
+                <tnt:fixedItem>
+                    <tnt:NavigationList>
+                        <tnt:NavigationListItem
+                            text="{i18n>nav.createProduct}"
+                            icon="sap-icon://add"
+                            key="create-product"
+                        />
+                        <tnt:NavigationListItem
+                            text="{i18n>nav.createSupplier}"
+                            icon="sap-icon://add"
+                            key="create-supplier"
+                        />
+                    </tnt:NavigationList>
+                </tnt:fixedItem>
+            </tnt:SideNavigation>
+        </tnt:sideContent>
+        <tnt:mainContents>
+            <App id="app" />
+        </tnt:mainContents>
+    </tnt:ToolPage>
+</mvc:View>

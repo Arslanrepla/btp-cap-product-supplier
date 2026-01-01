@@ -1,0 +1,140 @@
+{
+	"_version": "1.12.0",
+	"sap.app": {
+		"id": "test",
+		"type": "application",
+		"i18n": "i18n/i18n.properties",
+		"title": "{{appTitle}}",
+		"description": "{{appDescription}}",
+		"applicationVersion": {
+			"version": "${version}"
+		},
+		"sourceTemplate": {
+			"id": "generator-ui5-app",
+			"version": "1.1.0"
+		},
+		"dataSources": {
+			"default": {
+				"uri": "/odata/v4/catalog/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "4.0"
+				}
+			}
+		}
+	},
+	"sap.ui": {
+		"technology": "UI5",
+		"icons": {},
+		"deviceTypes": {
+			"desktop": true,
+			"tablet": true,
+			"phone": true
+		}
+	},
+	"sap.ui5": {
+		"rootView": {
+			"viewName": "test.view.App",
+			"type": "XML",
+			"id": "app"
+		},
+		"dependencies": {
+			"minUI5Version": "1.142.0",
+			"libs": {
+				"sap.ui.core": {},
+				"sap.m": {},
+				"sap.ui.layout": {},
+				"sap.tnt": {},
+				"sap.f": {},
+				"sap.uxap": {},
+				"sap.ui.unified": {}
+			}
+		},
+		"handleValidation": true,
+		"contentDensities": {
+			"compact": true,
+			"cozy": true
+		},
+		"models": {
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleName": "test.i18n.i18n",
+					"supportedLocales": [
+						"en",
+						"de"
+					],
+					"fallbackLocale": "en",
+					"async": true
+				}
+			},
+			"": {
+				"dataSource": "default",
+				"preload": true,
+				"settings": {
+					"autoExpandSelect": true,
+					"earlyRequests": true,
+					"operationMode": "Server"
+				}
+			}
+		},
+		"routing": {
+			"config": {
+				"routerClass": "sap.m.routing.Router",
+				"viewType": "XML",
+				"viewPath": "test.view",
+				"controlId": "app",
+				"controlAggregation": "pages"
+			},
+			"routes": [
+				{
+					"pattern": "home",
+					"name": "main",
+					"target": "main"
+				},
+				{
+					"pattern": "products",
+					"name": "products",
+					"target": "products"
+				},
+				{
+					"pattern": "suppliers",
+					"name": "suppliers",
+					"target": "suppliers"
+				},
+				{
+					"pattern": "create-supplier",
+					"name": "create-supplier",
+					"target": "create-supplier"
+				},
+				{
+					"pattern": "create-product",
+					"name": "create-product",
+					"target": "create-product"
+				}
+			],
+			"targets": {
+				"main": {
+					"viewId": "main",
+					"viewName": "Main"
+				},
+				"products": {
+					"viewId": "products",
+					"viewName": "Products"
+				},
+				"suppliers": {
+					"viewId": "suppliers",
+					"viewName": "Suppliers"
+				},
+				"create-supplier": {
+					"viewId": "create-supplier",
+					"viewName": "Create-supplier"
+				},
+				"create-product": {
+					"viewId": "create-product",
+					"viewName": "Create-product"
+				}
+			}
+		}
+	}
+}

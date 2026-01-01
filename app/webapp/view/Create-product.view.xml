@@ -1,0 +1,113 @@
+<mvc:View
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"                     
+    xmlns:form="sap.ui.layout.form"
+    xmlns:core="sap.ui.core"
+    controllerName="test.controller.Create-product">
+
+    <Page
+        title="{i18n>product.create.title}"
+        showNavButton="true"
+        navButtonPress=".onNavBack"
+        class="sapUiResponsiveContentPadding">
+
+        <content>
+            <form:SimpleForm
+                editable="true"
+                layout="ResponsiveGridLayout"
+                width="100%">
+
+                <Label
+                    text="{i18n>field.name}"
+                    required="true" />
+
+                <Input
+                    id="productName"
+                    value="{formValues>/name}"
+                    required="true"
+                    maxLength="100"
+                    valueLiveUpdate="true"
+                    liveChange=".onAnyFieldChange"
+                    submit=".onAnyFieldChange" />
+
+                <Label text="{i18n>field.description}" />
+
+                <TextArea
+                    id="productDesc"
+                    value="{formValues>/description}"
+                    rows="3"
+                    maxLength="500"
+                    growing="true"
+                    liveChange=".onAnyFieldChange" />
+
+                <Label text="{i18n>field.category}" />
+                <Input
+                    id="category"
+                    value="{formValues>/category}"
+                    maxLength="100"
+                    valueLiveUpdate="true"
+                    liveChange=".onAnyFieldChange"
+                    submit=".onAnyFieldChange" />
+
+                <Label text="{i18n>field.price}" />
+                <Input
+                    id="price"
+                    value="{formValues>/price}"
+                    type="Number"
+                    valueLiveUpdate="true"
+                    liveChange=".onAnyFieldChange"
+                    submit=".onAnyFieldChange" />
+
+                <Label text="{i18n>field.stock}" />
+                <Input
+                    id="stock"
+                    value="{formValues>/stock}"
+                    type="Number"
+                    valueLiveUpdate="true"
+                    liveChange=".onAnyFieldChange"
+                    submit=".onAnyFieldChange" />
+
+                <Label text="{i18n>field.supplier}" />
+                <Select
+                    id="productSupplierSelect"
+                    width="100%"
+                    forceSelection="false"
+                    selectedKey="{formValues>/supplier_uuid}"
+                    change=".onSupplierChange"
+                    items="{ path: '/Suppliers' }">
+
+                    <core:Item
+                        key="{uuid}"
+                        text="{name}" />
+                </Select>
+                
+                <Label text="{i18n>field.test}" />
+                <TextArea
+                    id="test"
+                    value="{formValues>/test}"
+                    rows="3"
+                    maxLength="500"
+                    growing="true"
+                    liveChange=".onAnyFieldChange" />
+
+
+            </form:SimpleForm>
+        </content>
+
+        <footer>
+            <OverflowToolbar>
+                <ToolbarSpacer />
+                <Button
+                    text="{i18n>common.clear}"
+                    press=".onClear"
+                    enabled="{ui>/clearEnabled}" />
+                <Button
+                    text="{i18n>common.save}"
+                    type="Emphasized"
+                    icon="sap-icon://save"
+                    press=".onSave" />
+            </OverflowToolbar>
+        </footer>
+
+    </Page>
+</mvc:View>

@@ -1,0 +1,428 @@
+<mvc:View
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:uxap="sap.uxap"
+    xmlns:core="sap.ui.core"
+    controllerName="test.controller.Products"
+>
+    <f:FlexibleColumnLayout
+        id="fclProd"
+        layout="OneColumn"
+    >
+        <!-- BEGIN COLUMN: List -->
+        <f:beginColumnPages>
+            <Page
+                id="masterPageProd"
+                title="{i18n>products.title}"
+                showNavButton="true"
+                navButtonPress=".onNavBack"
+                class="sapUiResponsiveContentPadding"
+            >
+                <content>
+                    <Table
+                        id="tblProducts"
+                        mode="MultiSelect"
+                        includeItemInSelection="true"
+                        items="{/Products}"
+                        selectionChange=".onSelectionChange"
+                        itemPress=".onItemPress"
+                        growing="true"
+                        growingScrollToLoad="true"
+                        noDataText="{i18n>products.nodata}"
+                        rememberSelections="false"
+                    >
+                        <headerToolbar>
+                            <OverflowToolbar>
+                                <Title
+                                    text="{i18n>products.list.title}"
+                                    level="H2"
+                                />
+
+                                <!-- Search -->
+                                <ToolbarSpacer />
+                                <SearchField
+                                    id="prodSearch"
+                                    width="18rem"
+                                    placeholder="{i18n>products.search.placeholder}"
+                                    search=".onSearchProducts"
+                                />
+                                <Button
+                                    text="{i18n>common.clear}"
+                                    type="Transparent"
+                                    press=".onClearSearch"
+                                />
+
+                                <!-- Sort -->
+                                <ToolbarSpacer />
+                                <Text text="{i18n>common.sortBy}" />
+                                <Select
+                                    id="prodSortBy"
+                                    width="12rem"
+                                    selectedKey="name"
+                                >
+                                    <core:Item
+                                        key="name"
+                                        text="{i18n>field.name}"
+                                    />
+                                    <core:Item
+                                        key="category"
+                                        text="{i18n>field.category}"
+                                    />
+                                    <core:Item
+                                        key="price"
+                                        text="{i18n>field.price}"
+                                    />
+                                    <core:Item
+                                        key="stock"
+                                        text="{i18n>field.stock}"
+                                    />
+                                    <core:Item
+                                        key="test"
+                                        text="{i18n>field.test}"
+                                    />
+                                </Select>
+                                <Button
+                                    icon="sap-icon://sort-ascending"
+                                    tooltip="{i18n>sort.asc}"
+                                    press=".onSortAsc"
+                                />
+                                <Button
+                                    icon="sap-icon://sort-descending"
+                                    tooltip="{i18n>sort.desc}"
+                                    press=".onSortDesc"
+                                />
+                                <ToolbarSpacer />
+                                <Button
+                                    id="btnDeleteProd"
+                                    text="{i18n>common.deleteSelected}"
+                                    type="Negative"
+                                    icon="sap-icon://delete"
+                                    enabled="false"
+                                    press=".onDeleteSelected"
+                                />
+                            </OverflowToolbar>
+                        </headerToolbar>
+
+                        <columns>
+                            <Column>
+                                <Text text="{i18n>field.name}" />
+                            </Column>
+                            <Column>
+                                <Text text="{i18n>field.category}" />
+                            </Column>
+                            <Column hAlign="End">
+                                <Text text="{i18n>field.price}" />
+                            </Column>
+                            <Column hAlign="End">
+                                <Text text="{i18n>field.stock}" />
+                            </Column>
+                            <Column>
+                                <Text text="{i18n>field.supplier}" />
+                            </Column>
+                            <Column
+                                hAlign="Center"
+                                width="7rem"
+                            >
+                                <Text text="{i18n>common.actions}" />
+                            </Column>
+                            <Column>
+                                <Text text="{i18n>field.test}" />
+                            </Column>
+                        </columns>
+                        <items>
+                            <ColumnListItem type="Active">
+                                <cells>
+                                    <Text text="{name}" />
+                                    <Text text="{category}" />
+                                    <ObjectNumber number="{path: 'price'}" />
+                                    <ObjectNumber number="{path: 'stock'}" />
+                                    <Text text="{supplier/name}" />
+                                    <Button
+                                        type="Transparent"
+                                        icon="sap-icon://delete"
+                                        tooltip="{i18n>common.delete}"
+                                        press=".onRowDelete"
+                                    />
+                                    <Text text="{test}" />
+                                </cells>
+                            </ColumnListItem>
+                        </items>
+                    </Table>
+                </content>
+            </Page>
+        </f:beginColumnPages>
+
+        <!-- MID COLUMN: Detail (Object Page) -->
+        <f:midColumnPages>
+            <Page
+                id="detailPageProd"
+                title="{i18n>products.detail.title}"
+                class="sapUiResponsiveContentPadding"
+                showNavButton="true"
+                navButtonPress=".onNavBack"
+            >
+                <content>
+                    <uxap:ObjectPageLayout
+                        id="oplProduct"
+                        showTitleInHeaderContent="true"
+                        alwaysShowContentHeader="false"
+                        preserveHeaderStateOnScroll="false"
+                        headerContentPinnable="true"
+                        upperCaseAnchorBar="false"
+                    >
+                        <!-- Dynamic Header -->
+                        <uxap:headerTitle>
+                            <uxap:ObjectPageDynamicHeaderTitle>
+                                <uxap:expandedHeading>
+                                    <Title
+                                        text="{name}"
+                                        wrapping="true"
+                                        class="sapUiSmallMarginEnd"
+                                    />
+                                </uxap:expandedHeading>
+
+                                <uxap:snappedHeading>
+                                    <FlexBox
+                                        wrap="NoWrap"
+                                        fitContainer="true"
+                                        alignItems="Center"
+                                    >
+                                        <Avatar
+                                            src="sap-icon://product"
+                                            displaySize="S"
+                                            displayShape="Square"
+                                            class="sapUiTinyMarginEnd"
+                                        />
+
+                                        <Title
+                                            text="{name}"
+                                            wrapping="true"
+                                            class="sapUiSmallMarginEnd"
+                                        />
+                                    </FlexBox>
+                                </uxap:snappedHeading>
+                                <uxap:actions>
+                                    <Button
+                                        text="{i18n>common.close}"
+                                        icon="sap-icon://decline"
+                                        type="Transparent"
+                                        press=".onCloseDetail"
+                                    />
+                                    <Button
+                                        id="btnEditProd"
+                                        text="{i18n>common.edit}"
+                                        icon="sap-icon://edit"
+                                        type="Emphasized"
+                                        press=".onEdit"
+                                    />
+                                </uxap:actions>
+                            </uxap:ObjectPageDynamicHeaderTitle>
+                        </uxap:headerTitle>
+
+                        <!-- Header content -->
+                        <uxap:headerContent>
+                            <FlexBox
+                                wrap="Wrap"
+                                fitContainer="true"
+                                alignItems="Stretch"
+                            >
+                                <VBox
+                                    justifyContent="Center"
+                                    class="sapUiSmallMarginEnd"
+                                >
+                                    <Label text="{i18n>field.category}" />
+                                    <Text text="{category}" />
+                                </VBox>
+
+                                <VBox
+                                    justifyContent="Center"
+                                    class="sapUiSmallMarginEnd"
+                                >
+                                    <Label text="{i18n>field.price}" />
+                                    <ObjectNumber number="{path:'price'}" />
+                                </VBox>
+
+                                <VBox
+                                    justifyContent="Center"
+                                    class="sapUiSmallMarginEnd"
+                                >
+                                    <Label text="{i18n>field.stock}" />
+                                    <ObjectNumber number="{path:'stock'}" />
+                                </VBox>
+                            </FlexBox>
+                        </uxap:headerContent>
+
+                        <!-- Sections -->
+                        <!-- Product info -->
+                        <uxap:sections>
+                            <uxap:ObjectPageSection
+                                title="{i18n>products.section.general}"
+                            >
+                                <uxap:subSections>
+                                    <uxap:ObjectPageSubSection>
+                                        <uxap:blocks>
+                                            <form:SimpleForm
+                                                editable="false"
+                                                layout="ResponsiveGridLayout"
+                                                width="100%"
+                                            >
+                                                <Label
+                                                    text="{i18n>field.name}"
+                                                />
+                                                <Text text="{name}" />
+
+                                                <Label
+                                                    text="{i18n>field.description}"
+                                                />
+                                                <Text text="{description}" />
+
+                                                <Label
+                                                    text="{i18n>field.category}"
+                                                />
+                                                <Text text="{category}" />
+
+                                                <Label
+                                                    text="{i18n>field.price}"
+                                                />
+                                                <ObjectNumber
+                                                    number="{path:'price'}"
+                                                />
+                                                <Label
+                                                    text="{i18n>field.stock}"
+                                                />
+                                                <ObjectNumber
+                                                    number="{path:'stock'}"
+                                                />
+                                                <Label
+                                                    text="{i18n>field.supplier}"
+                                                />
+                                                <Text text="{supplier/name}" />
+                                            </form:SimpleForm>
+                                        </uxap:blocks>
+                                    </uxap:ObjectPageSubSection>
+                                </uxap:subSections>
+                            </uxap:ObjectPageSection>
+                            <!-- Supplier info -->
+                            <uxap:ObjectPageSection
+                                title="{i18n>products.section.supplierInfo}"
+                            >
+                                <uxap:subSections>
+                                    <uxap:ObjectPageSubSection>
+                                        <uxap:blocks>
+                                            <form:SimpleForm
+                                                editable="false"
+                                                layout="ResponsiveGridLayout"
+                                                width="100%"
+                                            >
+                                                <Label
+                                                    text="{i18n>field.name}"
+                                                />
+                                                <Text text="{supplier/name}" />
+
+                                                <Label
+                                                    text="{i18n>field.email}"
+                                                />
+                                                <Text text="{supplier/email}" />
+
+                                                <Label
+                                                    text="{i18n>field.tel}"
+                                                />
+                                                <Text text="{supplier/tel}" />
+
+                                                <Label
+                                                    text="{i18n>field.address}"
+                                                />
+                                                <Text
+                                                    text="{supplier/address}"
+                                                />
+
+                                                <Label
+                                                    text="{i18n>field.description}"
+                                                />
+                                                <Text
+                                                    text="{supplier/description}"
+                                                />
+                                            </form:SimpleForm>
+                                        </uxap:blocks>
+                                    </uxap:ObjectPageSubSection>
+                                </uxap:subSections>
+                            </uxap:ObjectPageSection>
+                        </uxap:sections>
+                    </uxap:ObjectPageLayout>
+                </content>
+            </Page>
+        </f:midColumnPages>
+    </f:FlexibleColumnLayout>
+
+    <!-- Edit Dialog -->
+    <Dialog
+        id="editDialogProd"
+        title="{i18n>products.edit.title}"
+        afterClose=".onEditDialogAfterClose"
+    >
+        <content>
+            <form:SimpleForm
+                editable="true"
+                layout="ResponsiveGridLayout"
+                width="100%"
+            >
+                <Label text="{i18n>field.name}" />
+                <Input
+                    value="{editForm>/name}"
+                    required="true"
+                />
+
+                <Label text="{i18n>field.description}" />
+                <TextArea
+                    value="{editForm>/description}"
+                    rows="3"
+                    growing="true"
+                />
+
+                <Label text="{i18n>field.category}" />
+                <Input value="{editForm>/category}" />
+
+                <Label text="{i18n>field.price}" />
+                <Input
+                    value="{editForm>/price}"
+                    type="Number"
+                />
+
+                <Label text="{i18n>field.stock}" />
+                <Input
+                    value="{editForm>/stock}"
+                    type="Number"
+                />
+                <Label text="{i18n>field.supplier}" />
+                <Select
+                    id="editSupplierSelectProd"
+                    width="100%"
+                    forceSelection="true"
+                    selectedKey="{editForm>/supplier_uuid}"
+                    items="{ path: '/Suppliers' }"
+                >
+                    <core:Item
+                        key="{uuid}"
+                        text="{name}"
+                    />
+                </Select>
+            </form:SimpleForm>
+        </content>
+        <beginButton>
+            <Button
+                text="{i18n>common.save}"
+                type="Emphasized"
+                press=".onEditDialogSave"
+            />
+        </beginButton>
+
+        <endButton>
+            <Button
+                text="{i18n>common.cancel}"
+                press=".onEditDialogCancel"
+            />
+        </endButton>
+    </Dialog>
+</mvc:View>

@@ -1,0 +1,444 @@
+<mvc:View
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:sf="sap.ui.layout.form"
+    xmlns:m="sap.m"
+    xmlns:uxap="sap.uxap"
+    xmlns:unified="sap.ui.unified"
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form"
+    controllerName="test.controller.Suppliers"
+>
+    <f:FlexibleColumnLayout
+        id="fcl"
+        layout="OneColumn"
+    >
+        <!-- BEGIN COLUMN: Liste -->
+        <f:beginColumnPages>
+            <Page
+                id="masterPage"
+                title="{i18n>suppliers.title}"
+                showNavButton="true"
+                navButtonPress=".onNavBack"
+                class="sapUiResponsiveContentPadding"
+            >
+                <content>
+                    <Table
+                        id="tblSuppliers"
+                        mode="MultiSelect"
+                        includeItemInSelection="true"
+                        items="{
+                            path: '/Suppliers',
+                            parameters: { $select: 'name,email,tel,address,description' }
+                        }"
+                        selectionChange=".onSelectionChange"
+                        itemPress=".onItemPress"
+                        updateFinished=".onTableUpdateFinished"
+                        growing="true"
+                        growingScrollToLoad="true"
+                        noDataText="{i18n>suppliers.nodata}"
+                        rememberSelections="false"
+                    >
+                        <headerToolbar>
+                            <OverflowToolbar>
+                                <Title
+                                    text="{i18n>suppliers.list.title}"
+                                    level="H2"
+                                />
+                                <ToolbarSpacer />
+
+                                <!-- Search -->
+                                <SearchField
+                                    id="supSearch"
+                                    width="18rem"
+                                    placeholder="{i18n>suppliers.search.placeholder}"
+                                    search=".onSearchSuppliers"
+                                />
+
+                                <!-- Sort field -->
+                                <Select
+                                    id="supSortBy"
+                                    width="10rem"
+                                    selectedKey="name"
+                                    tooltip="{i18n>common.sortBy}"
+                                >
+                                    <items>
+                                        <core:Item
+                                            key="name"
+                                            text="{i18n>field.name}"
+                                        />
+                                        <core:Item
+                                            key="email"
+                                            text="{i18n>field.email}"
+                                        />
+                                        <core:Item
+                                            key="tel"
+                                            text="{i18n>field.tel}"
+                                        />
+                                        <core:Item
+                                            key="address"
+                                            text="{i18n>field.address}"
+                                        />
+                                    </items>
+                                </Select>
+                                <Button
+                                    icon="sap-icon://sort-ascending"
+                                    tooltip="{i18n>sort.asc}"
+                                    press=".onSortAsc"
+                                />
+                                <Button
+                                    icon="sap-icon://sort-descending"
+                                    tooltip="{i18n>sort.desc}"
+                                    press=".onSortDesc"
+                                />
+
+                                <ToolbarSeparator />
+
+                                <Button
+                                    id="btnDelete"
+                                    text="{i18n>common.deleteSelected}"
+                                    type="Negative"
+                                    icon="sap-icon://delete"
+                                    enabled="false"
+                                    press=".onDeleteSelected"
+                                />
+                                <!-- CSV EXPORT / IMPORT -->
+                                <ToolbarSeparator />
+
+                                <Button
+                                    id="btnExportCsv"
+                                    icon="sap-icon://download"
+                                    text="{i18n>common.export}"
+                                    tooltip="{i18n>common.export}"
+                                    press=".onExportCSV"
+                                />
+
+                                <Button
+                                    id="btnImportCsv"
+                                    icon="sap-icon://upload"
+                                    text="{i18n>common.import}"
+                                    tooltip="{i18n>common.import}"
+                                    press=".onImportCSV"
+                                />
+
+                                <unified:FileUploader
+                                    id="fuCsv"
+                                    class="sapUiHidden"
+                                    visible="true"
+                                    fileType="csv"
+                                    uploadOnChange="false"
+                                    useMultipart="false"
+                                    change=".onCsvSelected"
+                                />
+                            </OverflowToolbar>
+                        </headerToolbar>
+                        <columns>
+                            <Column>
+                                <Text text="{i18n>field.name}" />
+                            </Column>
+                            <Column>
+                                <Text text="{i18n>field.description}" />
+                            </Column>
+                            <Column>
+                                <Text text="{i18n>field.email}" />
+                            </Column>
+                            <Column>
+                                <Text text="{i18n>field.tel}" />
+                            </Column>
+                            <Column>
+                                <Text text="{i18n>field.address}" />
+                            </Column>
+                            <Column
+                                hAlign="Center"
+                                width="6rem"
+                            >
+                                <Text text="{i18n>common.actions}" />
+                            </Column>
+                        </columns>
+                        <items>
+                            <ColumnListItem type="Active">
+                                <cells>
+                                    <Text text="{name}" />
+                                    <Text text="{description}" />
+                                    <Text text="{email}" />
+                                    <Text text="{tel}" />
+                                    <Text text="{address}" />
+                                    <HBox justifyContent="Center">
+                                        <Button
+                                            icon="sap-icon://delete"
+                                            type="Transparent"
+                                            tooltip="{i18n>common.delete}"
+                                            press=".onRowDelete"
+                                        />
+                                    </HBox>
+                                </cells>
+                            </ColumnListItem>
+                        </items>
+                    </Table>
+                </content>
+            </Page>
+        </f:beginColumnPages>
+        <!-- MID COLUMN: Detay -->
+        <f:midColumnPages>
+            <Page
+                id="detailPage"
+                title="{i18n>suppliers.detail.title}"
+                class="sapUiResponsiveContentPadding"
+            >
+                <content>
+                    <uxap:ObjectPageLayout
+                        id="oplSupplier"
+                        showTitleInHeaderContent="true"
+                        alwaysShowContentHeader="false"
+                        preserveHeaderStateOnScroll="false"
+                        headerContentPinnable="true"
+                        upperCaseAnchorBar="false"
+                    >
+                        <uxap:headerTitle>
+                            <uxap:ObjectPageDynamicHeaderTitle>
+                                <uxap:expandedHeading>
+                                    <m:Title
+                                        text="{name}"
+                                        wrapping="true"
+                                        class="sapUiSmallMarginEnd"
+                                    />
+                                </uxap:expandedHeading>
+
+                                <uxap:snappedHeading>
+                                    <m:FlexBox
+                                        wrap="NoWrap"
+                                        fitContainer="true"
+                                        alignItems="Center"
+                                    >
+                                        <m:Avatar
+                                            src="sap-icon://supplier"
+                                            displaySize="S"
+                                            displayShape="Square"
+                                            class="sapUiTinyMarginEnd"
+                                        />
+                                        <m:Title
+                                            text="{name}"
+                                            wrapping="true"
+                                            class="sapUiSmallMarginEnd"
+                                        />
+                                    </m:FlexBox>
+                                </uxap:snappedHeading>
+                                <uxap:actions>
+                                    <m:Button
+                                        text="{i18n>common.close}"
+                                        icon="sap-icon://decline"
+                                        type="Transparent"
+                                        press=".onCloseDetail"
+                                    />
+                                    <m:Button
+                                        id="btnEdit"
+                                        text="{i18n>common.edit}"
+                                        icon="sap-icon://edit"
+                                        type="Emphasized"
+                                        press=".onEdit"
+                                    />
+                                </uxap:actions>
+                            </uxap:ObjectPageDynamicHeaderTitle>
+                        </uxap:headerTitle>
+                        <uxap:headerContent>
+                            <m:FlexBox
+                                wrap="Wrap"
+                                fitContainer="true"
+                                alignItems="Stretch"
+                            >
+                                <m:VBox
+                                    justifyContent="Center"
+                                    class="sapUiSmallMarginEnd"
+                                >
+                                    <m:Label text="{i18n>field.email}" />
+                                    <m:Text text="{email}" />
+                                </m:VBox>
+
+                                <m:VBox
+                                    justifyContent="Center"
+                                    class="sapUiSmallMarginEnd"
+                                >
+                                    <m:Label text="{i18n>field.tel}" />
+                                    <m:Text text="{tel}" />
+                                </m:VBox>
+                            </m:FlexBox>
+                        </uxap:headerContent>
+
+                        <uxap:sections>
+                            <!-- General -->
+                            <uxap:ObjectPageSection
+                                title="{i18n>suppliers.section.general}"
+                            >
+                                <uxap:subSections>
+                                    <uxap:ObjectPageSubSection>
+                                        <uxap:blocks>
+                                            <form:SimpleForm
+                                                editable="false"
+                                                layout="ResponsiveGridLayout"
+                                                width="100%"
+                                            >
+                                                <Label
+                                                    text="{i18n>field.name}"
+                                                />
+                                                <Text text="{name}" />
+
+                                                <Label
+                                                    text="{i18n>field.email}"
+                                                />
+                                                <Text text="{email}" />
+
+                                                <Label
+                                                    text="{i18n>field.tel}"
+                                                />
+                                                <Text text="{tel}" />
+
+                                                <Label
+                                                    text="{i18n>field.address}"
+                                                />
+                                                <Text text="{address}" />
+
+                                                <Label
+                                                    text="{i18n>field.description}"
+                                                />
+                                                <Text text="{description}" />
+                                            </form:SimpleForm>
+                                        </uxap:blocks>
+                                    </uxap:ObjectPageSubSection>
+                                </uxap:subSections>
+                            </uxap:ObjectPageSection>
+                            <uxap:ObjectPageSection
+                                title="{i18n>suppliers.products.section}"
+                            >
+                                <uxap:subSections>
+                                    <uxap:ObjectPageSubSection>
+                                        <uxap:blocks>
+                                            <Table
+                                                id="tblSupplierProducts"
+                                                items="{path: 'products'}"
+                                                growing="true"
+                                                growingScrollToLoad="true"
+                                                noDataText="{i18n>suppliers.products.nodata}"
+                                            >
+                                                <headerToolbar>
+                                                    <OverflowToolbar>
+                                                        <Title
+                                                            text="{i18n>suppliers.products.section}"
+                                                            level="H3"
+                                                        />
+                                                    </OverflowToolbar>
+                                                </headerToolbar>
+
+                                                <columns>
+                                                    <Column>
+                                                        <Text
+                                                            text="{i18n>field.name}"
+                                                        />
+                                                    </Column>
+                                                    <Column>
+                                                        <Text
+                                                            text="{i18n>field.category}"
+                                                        />
+                                                    </Column>
+                                                    <Column hAlign="End">
+                                                        <Text
+                                                            text="{i18n>field.price}"
+                                                        />
+                                                    </Column>
+                                                    <Column hAlign="End">
+                                                        <Text
+                                                            text="{i18n>field.stock}"
+                                                        />
+                                                    </Column>
+                                                </columns>
+                                                <items>
+                                                    <ColumnListItem>
+                                                        <cells>
+                                                            <Text
+                                                                text="{name}"
+                                                            />
+                                                            <Text
+                                                                text="{category}"
+                                                            />
+                                                            <ObjectNumber
+                                                                number="{path: 'price'}"
+                                                            />
+                                                            <ObjectNumber
+                                                                number="{path: 'stock'}"
+                                                            />
+                                                        </cells>
+                                                    </ColumnListItem>
+                                                </items>
+                                            </Table>
+                                        </uxap:blocks>
+                                    </uxap:ObjectPageSubSection>
+                                </uxap:subSections>
+                            </uxap:ObjectPageSection>
+                        </uxap:sections>
+                    </uxap:ObjectPageLayout>
+                </content>
+            </Page>
+        </f:midColumnPages>
+    </f:FlexibleColumnLayout>
+
+    <!-- Edit Dialog -->
+    <Dialog
+        id="editDialog"
+        title="{i18n>suppliers.edit.title}"
+        afterClose=".onEditDialogAfterClose"
+    >
+        <content>
+            <form:SimpleForm
+                editable="true"
+                layout="ResponsiveGridLayout"
+                width="100%"
+            >
+                <Label text="{i18n>field.name}" />
+                <Input
+                    value="{editForm>/name}"
+                    required="true"
+                />
+
+                <Label text="{i18n>field.email}" />
+                <Input
+                    value="{editForm>/email}"
+                    type="Email"
+                />
+
+                <Label text="{i18n>field.tel}" />
+                <Input
+                    value="{editForm>/tel}"
+                    type="Tel"
+                />
+
+                <Label text="{i18n>field.address}" />
+                <TextArea
+                    value="{editForm>/address}"
+                    rows="3"
+                    growing="true"
+                />
+
+                <Label text="{i18n>field.description}" />
+                <TextArea
+                    value="{editForm>/description}"
+                    rows="3"
+                    growing="true"
+                />
+            </form:SimpleForm>
+        </content>
+        <beginButton>
+            <Button
+                text="{i18n>common.save}"
+                type="Emphasized"
+                press=".onEditDialogSave"
+            />
+        </beginButton>
+
+        <endButton>
+            <Button
+                text="{i18n>common.cancel}"
+                press=".onEditDialogCancel"
+            />
+        </endButton>
+    </Dialog>
+</mvc:View>
